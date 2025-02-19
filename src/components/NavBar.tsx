@@ -29,7 +29,7 @@ export const NavBar = () => {
           </SignOutButton>
         </SignedIn>
         <SignedOut>
-          <SignInButton mode="modal">
+          <SignInButton>
             <Button
               variant={"outline"}
               size={"sm"}
