@@ -13,9 +13,9 @@ import { LogInIcon, LogOutIcon } from "lucide-react";
 
 export const NavBar = () => {
   return (
-    <nav className="flex items-end justify-between py-4 px-6 bg-background border-b">
+    <nav className="flex items-end justify-between py-4 px-6 bg-background border-b top-0 sticky z-50">
       hello
-      <div className="flex items-center ml-auto">
+      <div className="flex items-center ml-auto gap-2">
         <SignedIn>
           <SignOutButton>
             <Button
@@ -29,7 +29,7 @@ export const NavBar = () => {
           </SignOutButton>
         </SignedIn>
         <SignedOut>
-          <SignInButton>
+          <SignInButton mode="modal">
             <Button
               variant={"outline"}
               size={"sm"}
@@ -40,6 +40,7 @@ export const NavBar = () => {
             </Button>
           </SignInButton>
         </SignedOut>
+
         <UserButton />
       </div>
     </nav>
