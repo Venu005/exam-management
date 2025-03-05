@@ -32,3 +32,28 @@ model Subject {
   name     String
   code     String?
 }
+
+model Timetable {
+  id        String      @id @default(uuid())
+  title     String
+  year      Int
+  branch    String
+  startDate DateTime
+  endDate   DateTime
+  exams     ExamEntry[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model ExamEntry {
+  id          String    @id @default(uuid())
+  timetable   Timetable @relation(fields: [timetableId], references: [id])
+  timetableId String
+  subject     String
+  code        String
+  date        DateTime
+  timeSlot    String // "10:00-13:00" or "14:00-17:00"
+  duration    Int?      @default(180)
+  venue       String?
+  updatedAt   DateTime  @updatedAt
+}
