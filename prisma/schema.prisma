@@ -56,4 +56,5 @@ model ExamEntry {
   duration    Int?      @default(180)
   venue       String?
   updatedAt   DateTime  @updatedAt
+  createdAt  DateTime  @default(now())
 }

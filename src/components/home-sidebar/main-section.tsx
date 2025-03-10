@@ -6,14 +6,19 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { FlameIcon, HomeIcon, CalendarCheck2, ComputerIcon } from "lucide-react";
+import {
+  FlameIcon,
+  HomeIcon,
+  CalendarCheck2,
+  ComputerIcon,
+} from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 const items = [
   {
     title: "Dashboard",
-    url: "/",
+    url: "/dashboard",
     icon: HomeIcon,
   },
   {

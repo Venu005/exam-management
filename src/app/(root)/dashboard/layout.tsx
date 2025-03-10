@@ -1,5 +1,6 @@
 import { HomeSideBar } from "@/components/home-sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+
 import React from "react";
 
 interface LayoutProps {
@@ -8,9 +9,14 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen pt-[4rem]">
+      <div className="flex min-h-screen ">
         <HomeSideBar />
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <div className="flex-1 overflow-hidden">
+          <SidebarTrigger />
+        <div className="p-4">
+        {children}
+        </div>
+        </div>
       </div>
     </SidebarProvider>
   );
