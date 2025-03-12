@@ -1,4 +1,5 @@
 "use client";
+import { Exam } from "@/types";
 import { useState } from "react";
 
 export default function TimetableGenerator() {
@@ -8,10 +9,10 @@ export default function TimetableGenerator() {
     startDate: "",
     endDate: "",
   });
-  const [timetable, setTimetable] = useState([]);
+  const [timetable, setTimetable] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 

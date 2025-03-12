@@ -5,3 +5,9 @@ export type UserCreate = {
   clerkId: string;
   imageUrl: string;
 };
+
+export interface Exam {
+  date: string;
+  subject: string;
+  code: string;
+}
