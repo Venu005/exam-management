@@ -14,14 +14,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  username  String   @unique
-  clerkId   String   @unique
-  imageUrl  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String               @id @default(cuid())
+  email              String               @unique
+  name               String?
+  username           String               @unique
+  clerkId            String               @unique
+  imageUrl           String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  SeatingArrangement SeatingArrangement[]
 }
 
 model Subject {
@@ -46,15 +47,58 @@ model Timetable {
 }
 
 model ExamEntry {
+  id                 String               @id @default(uuid())
+  timetable          Timetable            @relation(fields: [timetableId], references: [id])
+  timetableId        String
+  subject            String
+  code               String
+  date               DateTime
+  timeSlot           String // "10:00-13:00" or "14:00-17:00"
+  duration           Int?                 @default(180)
+  venue              String?
+  updatedAt          DateTime             @updatedAt
+  createdAt          DateTime             @default(now())
+  SeatingArrangement SeatingArrangement[]
+}
+
+model Classroom {
+  id          String               @id @default(uuid())
+  name        String               @unique
+  cols        Int // Number of columns
+  seatsPerCol Int // Seats per column
+  capacity    Int                  @default(0) // Calculated field
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  exams       SeatingArrangement[]
+
+  @@map("classrooms")
+}
+
+model SeatingArrangement {
   id          String    @id @default(uuid())
-  timetable   Timetable @relation(fields: [timetableId], references: [id])
-  timetableId String
-  subject     String
-  code        String
-  date        DateTime
-  timeSlot    String // "10:00-13:00" or "14:00-17:00"
-  duration    Int?      @default(180)
-  venue       String?
-  updatedAt   DateTime  @updatedAt
-  createdAt  DateTime  @default(now())
+  examEntry   ExamEntry @relation(fields: [examEntryId], references: [id])
+  examEntryId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+  classroomId String
+  student     Student   @relation(fields: [studentId], references: [id]) // Changed from User
+  studentId   String
+  col         Int
+  seat        Int
+  createdAt   DateTime  @default(now())
+  User        User?     @relation(fields: [userId], references: [id])
+  userId      String?
+
+  @@unique([examEntryId, studentId])
+  @@unique([classroomId, examEntryId, col, seat])
+}
+
+model Student {
+  // Student data fields
+  id                 String               @id @default(cuid())
+  rollNumber         String               @unique
+  fullName           String
+  year               Int
+  branch             String
+  createdAt          DateTime             @default(now())
+  SeatingArrangement SeatingArrangement[]
 }
