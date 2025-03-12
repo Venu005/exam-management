@@ -131,3 +131,21 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export async function GET() {
+  try {
+    const timetables = await prisma.timetable.findMany({
+      include: { exams: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json(timetables);
+  } catch (error) {
+    console.error("Error fetching timetables:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch timetables" },
+      { status: 500 }
+    );
+  }
+}
+

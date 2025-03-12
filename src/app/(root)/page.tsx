@@ -20,7 +20,7 @@ export default function Home() {
           What our users say about us
         </h1>
         <div>
-          <Testimonials />
+          <Testimonials /> 
         </div>
       </section>
       <section className="pt-3">

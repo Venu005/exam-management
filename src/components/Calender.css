@@ -1,0 +1,86 @@
+.rbc-month-view {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: minmax(120px, auto);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rbc-month-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f3f4f6;
+}
+
+.rbc-header {
+  padding: 12px;
+  text-align: center;
+  font-weight: 500;
+  color: #374151;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rbc-header:last-child {
+  border-right: none;
+}
+
+.rbc-month-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  min-height: 140px;
+}
+
+.rbc-day-bg {
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rbc-day-bg:last-child {
+  border-right: none;
+}
+
+.rbc-date-cell {
+  padding: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.rbc-row-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.rbc-event {
+  margin: 2px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  z-index: 1;
+}
+
+.rbc-event-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Time slot colors */
+.rbc-event[style*="background-color: rgb(96, 165, 250)"] {
+  background-color: #3b82f6 !important; /* Morning slot - blue */
+}
+
+.rbc-event[style*="background-color: rgb(245, 158, 11)"] {
+  background-color: #f59e0b !important; /* Afternoon slot - orange */
+}
+
+/* Today's date highlight */
+.rbc-today {
+  background-color: #fef3c7;
+}
