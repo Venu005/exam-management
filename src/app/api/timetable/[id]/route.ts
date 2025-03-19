@@ -34,7 +34,6 @@ export async function PATCH(
   try {
     const { exams, ...timetableData } = await request.json();
 
-    // Validate input
     if (!exams || !Array.isArray(exams)) {
       return NextResponse.json(
         { error: "Invalid exam data structure" },
@@ -42,7 +41,11 @@ export async function PATCH(
       );
     }
 
-    const updatedTimetable = await prisma.$transaction([
+    // Transaction returns array of operation results in order
+    const transactionResults = await prisma.$transaction([
+      prisma.seatingArrangement.deleteMany({
+        where: { examEntry: { timetableId: params.id } },
+      }),
       prisma.examEntry.deleteMany({ where: { timetableId: params.id } }),
       prisma.timetable.update({
         where: { id: params.id },
@@ -67,12 +70,15 @@ export async function PATCH(
       }),
     ]);
 
+    // The updated timetable is the third element in the transaction results
+    const updatedTimetable = transactionResults[2];
+
     // Convert dates to ISO strings for frontend
     const responseData = {
-      ...updatedTimetable[1],
-      startDate: updatedTimetable[1].startDate.toISOString(),
-      endDate: updatedTimetable[1].endDate.toISOString(),
-      exams: updatedTimetable[1].exams.map((exam) => ({
+      ...updatedTimetable,
+      startDate: updatedTimetable.startDate.toISOString(),
+      endDate: updatedTimetable.endDate.toISOString(),
+      exams: updatedTimetable.exams.map((exam) => ({
         ...exam,
         date: exam.date.toISOString(),
         createdAt: exam.createdAt.toISOString(),
@@ -89,20 +95,31 @@ export async function PATCH(
     );
   }
 }
+
 export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    // First delete all related exams
-    await prisma.examEntry.deleteMany({
-      where: { timetableId: params.id },
-    });
-
-    // Then delete the timetable
-    await prisma.timetable.delete({
-      where: { id: params.id },
-    });
+    // First delete seating arrangements for all related exams
+    await prisma.$transaction([
+      // Delete seating arrangements
+      prisma.seatingArrangement.deleteMany({
+        where: {
+          examEntry: {
+            timetableId: params.id,
+          },
+        },
+      }),
+      // Then delete exams
+      prisma.examEntry.deleteMany({
+        where: { timetableId: params.id },
+      }),
+      // Finally delete the timetable
+      prisma.timetable.delete({
+        where: { id: params.id },
+      }),
+    ]);
 
     return NextResponse.json({ success: true });
   } catch (error) {

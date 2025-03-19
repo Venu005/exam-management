@@ -87,6 +87,7 @@ export async function POST(req: Request) {
     });
 
     const timetable = JSON.parse(response.choices[0].message.content!);
+    console.log(timetable);
 
     const isValid = timetable.every((exam: any) => {
       const validDate = !excludedDates.includes(exam.date);
@@ -148,4 +149,3 @@ export async function GET() {
     );
   }
 }
-

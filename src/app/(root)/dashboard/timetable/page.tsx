@@ -34,6 +34,7 @@ import { toast } from "sonner";
 import { Loader } from "lucide-react";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 const formSchema = z.object({
   year: z.string().min(1, "Year is required"),
   branch: z.string().min(2, "Branch is required"),
@@ -241,6 +242,7 @@ export default function TimetablesPage() {
             ))}
           </TableBody>
         </Table>
+        <Link href="/dashboard/classrooms"></Link>
       </div>
     </div>
   );
