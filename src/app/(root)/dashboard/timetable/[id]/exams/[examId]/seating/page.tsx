@@ -26,22 +26,26 @@ export default function SeatingPage({
   params: { id: string; examId: string };
 }) {
   const [seating, setSeating] = useState<any[]>([]);
+  const [classrooms, setClassrooms] = useState<any[]>([]);
+  const [selectedClassrooms, setSelectedClassrooms] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [editingAssignment, setEditingAssignment] = useState<any | null>(null);
 
   useEffect(() => {
-    fetchSeating();
+    fetchData();
   }, []);
 
-  const fetchSeating = async () => {
+  const fetchData = async () => {
     try {
-      const response = await axios.get(
-        `/api/exam-entry/${params.examId}/seating`
-      );
-      setSeating(response.data);
+      const [seatingRes, classroomsRes] = await Promise.all([
+        axios.get(`/api/exam-entry/${params.examId}/seating`),
+        axios.get(`/api/classrooms`),
+      ]);
+      setSeating(seatingRes.data);
+      setClassrooms(classroomsRes.data);
     } catch (error) {
-      toast.error("Failed to fetch seating arrangement");
+      toast.error("Failed to load data");
     } finally {
       setLoading(false);
     }
@@ -50,44 +54,45 @@ export default function SeatingPage({
   const handleGenerateSeating = async () => {
     try {
       setGenerating(true);
-
-      // First clear existing seating
-      const deleteResponse = await axios.delete(
-        `/api/exam-entry/${params.examId}/seating`
-      );
-
-      if (!deleteResponse.data.success) {
-        throw new Error("Failed to clear existing seating");
+      if (selectedClassrooms.length === 0) {
+        toast.error("Please select at least one classroom");
+        return;
       }
 
-      // Then generate new seating
-      const generateResponse = await axios.post(
-        `/api/exam-entry/${params.examId}/seating`
+      await axios.delete(`/api/exam-entry/${params.examId}/seating`);
+      const response = await axios.post(
+        `/api/exam-entry/${params.examId}/seating`,
+        {
+          classroomIds: selectedClassrooms,
+        }
       );
 
-      if (!generateResponse.data.success) {
-        throw new Error("Failed to generate new seating");
+      if (response.data.success) {
+        await fetchData();
+        toast.success(
+          "Seating generated with classrooms: " +
+            response.data.usedClassrooms
+              .map((c: any) => `${c.name} (${c.seatsUsed})`)
+              .join(", ")
+        );
       }
-
-      // Refresh the data
-      await fetchSeating();
-      toast.success("Seating arrangement generated successfully");
     } catch (error: any) {
-      console.error("Generation error:", error);
-      toast.error(
-        error.response?.data?.error || error.message || "Generation failed"
-      );
+      toast.error(error.response?.data?.error || "Generation failed");
     } finally {
       setGenerating(false);
     }
   };
-  const handleSaveAssignment = async (assignmentId: string, seatId: string) => {
+
+  const handleSaveAssignment = async (
+    arrangementId: string,
+    seatId: string
+  ) => {
     try {
       await axios.patch(
-        `/api/exam-entry/${params.examId}/seating/${assignmentId}`,
+        `/api/exam-entry/${params.examId}/seating/${arrangementId}`,
         { seatId }
       );
-      await fetchSeating();
+      await fetchData();
       toast.success("Seat assignment updated");
     } catch (error) {
       toast.error("Failed to update seat assignment");
@@ -101,7 +106,6 @@ export default function SeatingPage({
       </div>
     );
   }
-
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -116,6 +120,36 @@ export default function SeatingPage({
             "Generate Seating"
           )}
         </Button>
+      </div>
+      <div className="mb-6 p-4 border rounded-lg bg-gray-50">
+        <h3 className="mb-3 font-semibold">Select Classrooms:</h3>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {classrooms.map((classroom) => (
+            <label key={classroom.id} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={selectedClassrooms.includes(classroom.id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedClassrooms([
+                      ...selectedClassrooms,
+                      classroom.id,
+                    ]);
+                  } else {
+                    setSelectedClassrooms(
+                      selectedClassrooms.filter((id) => id !== classroom.id)
+                    );
+                  }
+                }}
+                className="h-4 w-4"
+              />
+              <span>
+                {classroom.name} ({classroom.capacity} seats) -{" "}
+                {classroom.branch} Yr{classroom.year}
+              </span>
+            </label>
+          ))}
+        </div>
       </div>
 
       {seating.length === 0 ? (

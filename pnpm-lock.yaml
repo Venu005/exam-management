@@ -81,8 +81,8 @@ importers:
         specifier: ^12.4.4
         version: 12.4.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       groq-sdk:
-        specifier: ^0.15.0
-        version: 0.15.0
+        specifier: ^0.17.0
+        version: 0.17.0
       lucide-react:
         specifier: ^0.469.0
         version: 0.469.0(react@18.3.1)
@@ -1547,8 +1547,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  groq-sdk@0.15.0:
-    resolution: {integrity: sha512-aYDEdr4qczx3cLCRRe+Beb37I7g/9bD5kHF+EEDxcrREWw1vKoRcfP3vHEkJB7Ud/8oOuF0scRwDpwWostTWuQ==}
+  groq-sdk@0.17.0:
+    resolution: {integrity: sha512-iCVWFfD6MixQwQLsaPyyt7mT4pbe/IR7c4eLaC8mdD+FjFJ8uPSuZz9fBqbJ3lFFHiiFC2uNkBL7VF/287JeIQ==}
 
   has-symbols@1.1.0:
     resolution: {integrity: sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ==}
@@ -3670,7 +3670,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  groq-sdk@0.15.0:
+  groq-sdk@0.17.0:
     dependencies:
       '@types/node': 18.19.79
       '@types/node-fetch': 2.6.12

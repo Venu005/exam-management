@@ -1,15 +1,26 @@
-// app/api/generate-timetable/route.ts
+// app/api/timetable/route.ts
 import { NextResponse } from "next/server";
 import { Groq } from "groq-sdk";
 import { z } from "zod";
 import { prisma } from "@/lib/db/prisma";
 
+// Request validation schema
 const requestSchema = z.object({
   year: z.number().int().min(1).max(4),
   branch: z.string().min(2).max(4),
   startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
+
+// Timetable entry validation schema
+const timetableSchema = z.array(
+  z.object({
+    subject: z.string(),
+    code: z.string(),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    timeSlot: z.enum(["10:00-13:00", "14:00-17:00"]),
+  })
+);
 
 export async function POST(req: Request) {
   try {
@@ -50,7 +61,6 @@ export async function POST(req: Request) {
 
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       if (d.getDay() === 0 || d.getDay() === 6) {
-        // Sunday or Saturday
         excludedDates.push(d.toISOString().split("T")[0]);
       }
     }
@@ -71,34 +81,58 @@ export async function POST(req: Request) {
       - Prefer morning slots for difficult subjects
       - Minimum 1-day gap between exams when possible
 
-      Return JSON array:
+      Return ONLY a valid JSON array following this structure:
       [{
         "subject": "Subject Name",
         "code": "Subject Code",
         "date": "YYYY-MM-DD",
         "timeSlot": "10:00-13:00" // or "14:00-17:00"
       }]
+
+      Your response must:
+      - Start with [ and end with ]
+      - Contain no additional text or explanations
+      - Use valid JSON syntax
+      - Maintain date order
     `;
 
     const response = await groq.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
-      model: "mixtral-8x7b-32768",
-      temperature: 0.3,
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a JSON timetable generator. Return only valid JSON arrays without any formatting or text.",
+        },
+        { role: "user", content: prompt },
+      ],
+      model: "llama3-70b-8192",
+      temperature: 0.1,
+      response_format: { type: "json_object" },
     });
 
-    const timetable = JSON.parse(response.choices[0].message.content!);
-    console.log(timetable);
+    // Extract and clean the response
+    const rawResponse = response.choices[0].message.content!;
+    const jsonStart = rawResponse.indexOf("[");
+    const jsonEnd = rawResponse.lastIndexOf("]") + 1;
+    const jsonString = rawResponse.slice(jsonStart, jsonEnd);
 
-    const isValid = timetable.every((exam: any) => {
-      const validDate = !excludedDates.includes(exam.date);
-      const validSlot = ["10:00-13:00", "14:00-17:00"].includes(exam.timeSlot);
+    // Parse and validate
+    const parsedData = JSON.parse(jsonString);
+    const timetable = timetableSchema.parse(parsedData);
+
+    // Date validation
+    const isValidDates = timetable.every((exam) => {
       const examDate = new Date(exam.date);
-      return validDate && validSlot && examDate >= start && examDate <= end;
+      return (
+        !excludedDates.includes(exam.date) &&
+        examDate >= start &&
+        examDate <= end
+      );
     });
 
-    if (!isValid) {
+    if (!isValidDates) {
       return NextResponse.json(
-        { error: "Generated timetable contains invalid entries" },
+        { error: "Generated timetable contains invalid dates" },
         { status: 500 }
       );
     }
@@ -106,13 +140,13 @@ export async function POST(req: Request) {
     // Save to database
     const savedTimetable = await prisma.timetable.create({
       data: {
-        title: `${branch} Year ${year} Timetable`,
+        title: `${validation.data.branch} Year ${validation.data.year} Timetable`,
         year: validation.data.year,
         branch: validation.data.branch,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         exams: {
-          create: timetable.map((exam: any) => ({
+          create: timetable.map((exam) => ({
             subject: exam.subject,
             code: exam.code,
             date: new Date(exam.date),
@@ -127,7 +161,11 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error("Timetable generation error:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      {
+        error: error.message?.startsWith("Invalid timetable")
+          ? error.message
+          : "Internal server error",
+      },
       { status: 500 }
     );
   }

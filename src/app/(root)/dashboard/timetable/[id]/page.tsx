@@ -31,6 +31,7 @@ import { TimeTableSchema } from "@/validation/types";
 import PDFDownloadButton from "@/components/PdfDownloadButton";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
 export default function TimetableDetail({
   params,
 }: {

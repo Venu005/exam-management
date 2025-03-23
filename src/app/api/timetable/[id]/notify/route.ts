@@ -5,12 +5,20 @@ import { ExamScheduleEmail } from "@/components/emails/ExamScheduleEmail";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Sample/test email addresses
+const TEST_EMAILS = [
+  "122cs0021@iiitk.ac.in",
+  "student2@test.com",
+  "demo.user@sample.org",
+  "kewaci8399@eligou.com",
+  "trial.account@temp.in",
+];
+
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get timetable with exams
     const timetable = await prisma.timetable.findUnique({
       where: { id: params.id },
       include: { exams: true },
@@ -23,23 +31,15 @@ export async function POST(
       );
     }
 
-    // Get students from the same year and branch
-    const students = await prisma.student.findMany({
-      where: {
-        year: timetable.year,
-        branch: timetable.branch,
-      },
-    });
-
-    // Send emails
-    const emailPromises = students.map(async (student) => {
+    // Send to sample emails with test student data
+    const emailPromises = TEST_EMAILS.map(async (email, index) => {
       try {
         await resend.emails.send({
-          from: "Academia <exams@yourdomain.com>",
-          to: student.email,
-          subject: `Exam Schedule Notification - ${timetable.title}`,
+          from: "Acme <onboarding@resend.dev>",
+          to: ["venusaiyalamanchili@gmail.com"],
+          subject: ` Exam Schedule Notification - ${timetable.title}`,
           react: ExamScheduleEmail({
-            studentName: student.fullName,
+            studentName: `Test Student ${index + 1}`, // Generate test student names
             timetable: {
               ...timetable,
               exams: timetable.exams.map((exam) => ({
@@ -51,7 +51,7 @@ export async function POST(
           }),
         });
       } catch (error) {
-        console.error(`Failed to send email to ${student.email}:`, error);
+        console.error(`Failed to send email to ${email}:`, error);
       }
     });
 
@@ -59,7 +59,8 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      message: `Notifications sent to ${students.length} students`,
+      message: `Test notifications sent to ${TEST_EMAILS.length} sample emails`,
+      testEmails: TEST_EMAILS,
     });
   } catch (error: any) {
     console.error("Notification error:", error);
