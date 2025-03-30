@@ -22,3 +22,10 @@ export const TimeTableSchema = z.object({
     })
   ),
 });
+
+export const CreateTableSchema = z.object({
+  year: z.string().min(1, "Year is required"),
+  branch: z.string().min(2, "Branch is required"),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});

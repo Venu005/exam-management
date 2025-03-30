@@ -1,4 +1,4 @@
-import React from "react";
+import Seats from "@/components/seats/Seats";
 //get the availabel calssrooms
 // each class room  has this many cols
 // each col has this amny seats
@@ -6,7 +6,7 @@ import React from "react";
 // overlapping time table dates  for different years mix the students
 
 const SeatArrangement = () => {
-  return <div>SeatArrangement</div>;
+  return <Seats />;
 };
 
 export default SeatArrangement;

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { Groq } from "groq-sdk";
 import { z } from "zod";
 import { prisma } from "@/lib/db/prisma";
+import { revalidatePath } from "next/cache";
 
 // Request validation schema
 const requestSchema = z.object({
@@ -69,7 +70,7 @@ export async function POST(req: Request) {
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
     const prompt = `
       Generate an exam timetable for engineering students with these subjects:
-      ${subjects.map((s) => `${s.name} (${s.code})`).join(", ")}
+      ${subjects.map((s: any) => `${s.name} (${s.code})`).join(", ")}
 
       Constraints:
       - Date range: ${startDate} to ${endDate}
@@ -156,7 +157,6 @@ export async function POST(req: Request) {
       },
       include: { exams: true },
     });
-
     return NextResponse.json({ timetable: savedTimetable });
   } catch (error: any) {
     console.error("Timetable generation error:", error);
@@ -177,7 +177,7 @@ export async function GET() {
       include: { exams: true },
       orderBy: { createdAt: "desc" },
     });
-
+    revalidatePath("/dashboard/timetable");
     return NextResponse.json(timetables);
   } catch (error) {
     console.error("Error fetching timetables:", error);

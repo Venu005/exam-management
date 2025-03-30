@@ -24,7 +24,9 @@ async function main() {
           year: year,
           seats: {
             create: Array.from({ length: 60 }, (_, i) => ({
-              seatNumber: `${String.fromCharCode(65 + Math.floor(i / 30))}${(i % 30) + 1}`,
+              seatNumber: `${String.fromCharCode(65 + Math.floor(i / 30))}${
+                (i % 30) + 1
+              }`,
             })),
           },
         },
