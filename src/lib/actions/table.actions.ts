@@ -3,7 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function fetchTimetables() {
   try {
-    const response = await axios.get("http://localhost:3000/api/timetable");
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_URL}/api/timetable`
+    );
     if (response.status !== 200) {
       throw new Error("Failed to fetch timetables");
     }
