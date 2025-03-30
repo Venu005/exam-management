@@ -28,7 +28,7 @@ export const NavBar = () => {
     <nav className="flex items-end justify-between py-4 px-6 bg-background border-b top-0 sticky z-50">
       <span
         onClick={handleLoogClick}
-        className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 cursor-pointer"
+        className="bg-clip-text text-xl font-bold text-transparent bg-gradient-to-r from-black dark:from-white to-gray-500 dark:to-gray-400"
       >
         Exam Flow
       </span>
