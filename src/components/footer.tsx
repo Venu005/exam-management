@@ -14,7 +14,7 @@ function Footer() {
               <h2 className="text-lg font-bold">Exam Flow</h2>
             </Link>
 
-            <h1 className="dark:text-gray-300 mt-4 ">
+            {/* <h1 className="dark:text-gray-300 mt-4 ">
               Build by{" "}
               <span className="text-[#039ee4] mr-2">
                 <Link href="https://github.com/Aftab3008">@Aftab</Link>
@@ -22,7 +22,7 @@ function Footer() {
               <span className="text-[#039ee4]">
                 <Link href="https://github.com/Venu005">@Venusai</Link>
               </span>
-            </h1>
+            </h1> */}
 
             <p className="text-sm dark:text-gray-400 mt-5">
               © {new Date().getFullYear()} ExamFlow. All rights reserved.

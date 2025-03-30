@@ -20,7 +20,7 @@ export function DemoCircles() {
     <>
       <BackgroundCircles variant={currentVariant} />
       <div className="absolute top-12 right-12 hidden sm:block">
-        <button
+        {/* <button
           type="button"
           className="bg-slate-950 dark:bg-white text-white dark:text-slate-950 px-4 py-1 rounded-md z-10 text-sm font-medium"
           onClick={() => {
@@ -28,7 +28,7 @@ export function DemoCircles() {
           }}
         >
           Change Variant
-        </button>
+        </button> */}
       </div>
     </>
   );

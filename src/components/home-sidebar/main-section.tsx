@@ -27,11 +27,6 @@ const items = [
     icon: CalendarCheck2,
     auth: true,
   },
-  {
-    title: "Seat arrangement",
-    url: "/dashboard/seat-arrangement",
-    icon: ComputerIcon,
-  },
 ];
 
 export const Mainsection = () => {
