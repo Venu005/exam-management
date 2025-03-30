@@ -29,7 +29,9 @@ import { Loader } from "lucide-react";
 import ExamCalendar from "@/components/Calender";
 import { TimeTableSchema } from "@/validation/types";
 import PDFDownloadButton from "@/components/PdfDownloadButton";
+import Link from "next/link";
 
+export const dynamic = "force-dynamic";
 export default function TimetableDetail({
   params,
 }: {
@@ -38,6 +40,7 @@ export default function TimetableDetail({
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [notifying, setNotifying] = useState(false);
 
   const form = useForm<z.infer<typeof TimeTableSchema>>({
     resolver: zodResolver(TimeTableSchema),
@@ -128,7 +131,17 @@ export default function TimetableDetail({
       setDeleting(false);
     }
   };
-
+  const handleNotify = async () => {
+    try {
+      setNotifying(true);
+      await axios.post(`/api/timetable/${params.id}/notify`);
+      toast.success("Notifications sent successfully");
+    } catch (error) {
+      toast.error("Failed to send notifications");
+    } finally {
+      setNotifying(false);
+    }
+  };
   if (loading)
     return (
       <div className="h-screen w-full flex items-center justify-center pl-[700px]">
@@ -144,6 +157,21 @@ export default function TimetableDetail({
             <h1 className="text-2xl font-bold">Edit Timetable</h1>
             <div className="flex gap-4">
               <PDFDownloadButton timetable={form.getValues()} />
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleNotify}
+                disabled={notifying}
+              >
+                {notifying ? (
+                  <div className="flex items-center">
+                    <Loader className="animate-spin h-4 w-4 text-white" />
+                    <span className="ml-2 text-sm">Notifying...</span>
+                  </div>
+                ) : (
+                  "Notify Students"
+                )}
+              </Button>
               <Button
                 type="button"
                 variant="destructive"
@@ -248,6 +276,7 @@ export default function TimetableDetail({
                       <TableHead>Subject</TableHead>
                       <TableHead>Date</TableHead>
                       <TableHead>Time Slot</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -284,6 +313,16 @@ export default function TimetableDetail({
                               </select>
                             )}
                           />
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            href={`/dashboard/timetable/${params.id}/exams/${exam.id}/seating`}
+                            legacyBehavior
+                          >
+                            <Button variant="outline" size="sm">
+                              Manage Seating
+                            </Button>
+                          </Link>
                         </TableCell>
                       </TableRow>
                     ))}

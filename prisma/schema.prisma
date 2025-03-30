@@ -14,14 +14,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  username  String   @unique
-  clerkId   String   @unique
-  imageUrl  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String               @id @default(cuid())
+  email              String               @unique
+  name               String?
+  username           String               @unique
+  clerkId            String               @unique
+  imageUrl           String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  SeatingArrangement SeatingArrangement[]
 }
 
 model Subject {
@@ -46,15 +47,62 @@ model Timetable {
 }
 
 model ExamEntry {
-  id          String    @id @default(uuid())
-  timetable   Timetable @relation(fields: [timetableId], references: [id])
-  timetableId String
-  subject     String
-  code        String
-  date        DateTime
-  timeSlot    String // "10:00-13:00" or "14:00-17:00"
-  duration    Int?      @default(180)
-  venue       String?
+  id                 String               @id @default(uuid())
+  timetable          Timetable            @relation(fields: [timetableId], references: [id])
+  timetableId        String
+  subject            String
+  code               String
+  date               DateTime
+  timeSlot           String // "10:00-13:00" or "14:00-17:00"
+  duration           Int?                 @default(180)
+  venue              String?
+  updatedAt          DateTime             @updatedAt
+  createdAt          DateTime             @default(now())
+  SeatingArrangement SeatingArrangement[]
+}
+
+model Classroom {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  capacity  Int
+  branch    String
+  year      Int
+  seats     Seat[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Seat {
+  id                 String               @id @default(cuid())
+  classroom          Classroom            @relation(fields: [classroomId], references: [id])
+  classroomId        String
+  seatNumber         String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  SeatingArrangement SeatingArrangement[]
+}
+
+model Student {
+  id                 String               @id @default(cuid())
+  rollNumber         String               @unique
+  name               String
+  branch             String
+  year               Int
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  SeatingArrangement SeatingArrangement[]
+}
+
+model SeatingArrangement {
+  id          String    @id @default(cuid())
+  examEntry   ExamEntry @relation(fields: [examEntryId], references: [id], onDelete: Cascade)
+  examEntryId String
+  student     Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId   String
+  seat        Seat      @relation(fields: [seatId], references: [id], onDelete: Cascade)
+  seatId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  createdAt  DateTime  @default(now())
 }
