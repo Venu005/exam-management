@@ -1,11 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+import ExamCalendar from "@/components/Calender";
+import PDFDownloadButton from "@/components/PdfDownloadButton";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,8 +12,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -25,11 +20,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Loader } from "lucide-react";
-import ExamCalendar from "@/components/Calender";
 import { TimeTableSchema } from "@/validation/types";
-import PDFDownloadButton from "@/components/PdfDownloadButton";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export const dynamic = "force-dynamic";
 export default function TimetableDetail({
@@ -144,8 +144,8 @@ export default function TimetableDetail({
   };
   if (loading)
     return (
-      <div className="h-screen w-full flex items-center justify-center pl-[700px]">
-        <Loader className="animate-spin h-6 w-6 text-gray-600" />
+      <div className="h-screen w-full flex items-center justify-center">
+        <Loader2 className="animate-spin h-6 w-6 text-gray-600" />
       </div>
     );
 
@@ -165,7 +165,7 @@ export default function TimetableDetail({
               >
                 {notifying ? (
                   <div className="flex items-center">
-                    <Loader className="animate-spin h-4 w-4 text-white" />
+                    <Loader2 className="animate-spin h-4 w-4 text-white" />
                     <span className="ml-2 text-sm">Notifying...</span>
                   </div>
                 ) : (
@@ -346,7 +346,7 @@ export default function TimetableDetail({
                 >
                   {form.formState.isSubmitting ? (
                     <div className="flex items-center">
-                      <Loader className="animate-spin h-4 w-4 text-white" />
+                      <Loader2 className="animate-spin h-4 w-4 text-white" />
                       <span className="ml-2 text-sm">Saving...</span>
                     </div>
                   ) : (

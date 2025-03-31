@@ -1,13 +1,13 @@
 // components/EditingSeatModel.tsx
 "use client";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -15,9 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function EditSeatModal({
   assignment,
@@ -75,7 +75,9 @@ export default function EditSeatModal({
           </div>
 
           {loadingSeats ? (
-            <Loader className="animate-spin" />
+            <div className="w-full h-full flex justify-center items-center">
+              <Loader2 className="animate-spin" />
+            </div>
           ) : (
             <div>
               <Label>Select New Seat</Label>

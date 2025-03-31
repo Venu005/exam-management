@@ -4,6 +4,8 @@ import CalendarWidget from "@/components/dashboard/Calendar";
 import ExamStats from "@/components/dashboard/ExamStats";
 import RecentTimetables from "@/components/dashboard/RecentTimetables";
 import { CalendarDays, Users, ClipboardList, School } from "lucide-react";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/timetable/TableSkeleton";
 
 export const dynamic = "force-dynamic";
 export default function Dashboard() {
@@ -148,7 +150,9 @@ export default function Dashboard() {
             <ExamStats />
           </div>
           <div className="lg:col-span-2">
-            <RecentTimetables timetables={timetables} />
+            <Suspense fallback={<TableSkeleton />}>
+              <RecentTimetables />
+            </Suspense>
           </div>
         </div>
       </div>

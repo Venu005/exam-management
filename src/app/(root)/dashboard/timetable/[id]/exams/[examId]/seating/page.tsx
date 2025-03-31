@@ -1,9 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import EditSeatModal from "@/components/EditingSeatModel";
 import { Button } from "@/components/ui/button";
-import { Edit, Loader } from "lucide-react";
-import { toast } from "sonner";
-import axios from "axios";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -12,13 +15,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import EditSeatModal from "@/components/EditingSeatModel";
+import axios from "axios";
+import { Edit, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function SeatingPage({
   params,
@@ -101,8 +101,8 @@ export default function SeatingPage({
 
   if (loading) {
     return (
-      <div className="flex justify-center p-8">
-        <Loader className="animate-spin h-8 w-8" />
+      <div className="flex justify-center p-8 h-full w-full">
+        <Loader2 className="animate-spin h-8 w-8" />
       </div>
     );
   }
@@ -113,7 +113,7 @@ export default function SeatingPage({
         <Button onClick={handleGenerateSeating} disabled={generating}>
           {generating ? (
             <>
-              <Loader className="animate-spin mr-2 h-4 w-4" />
+              <Loader2 className="animate-spin mr-2 h-4 w-4" />
               Generating...
             </>
           ) : (

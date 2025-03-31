@@ -1,9 +1,8 @@
 // app/api/timetable/route.ts
-import { NextResponse } from "next/server";
-import { Groq } from "groq-sdk";
-import { z } from "zod";
 import { prisma } from "@/lib/db/prisma";
-import { revalidatePath } from "next/cache";
+import { Groq } from "groq-sdk";
+import { NextResponse } from "next/server";
+import { z } from "zod";
 
 // Request validation schema
 const requestSchema = z.object({
@@ -157,7 +156,7 @@ export async function POST(req: Request) {
       },
       include: { exams: true },
     });
-    return NextResponse.json({ timetable: savedTimetable });
+    return NextResponse.json({ message: "Timetable created" }, { status: 201 });
   } catch (error: any) {
     console.error("Timetable generation error:", error);
     return NextResponse.json(
@@ -177,7 +176,6 @@ export async function GET() {
       include: { exams: true },
       orderBy: { createdAt: "desc" },
     });
-    revalidatePath("/dashboard/timetable");
     return NextResponse.json(timetables);
   } catch (error) {
     console.error("Error fetching timetables:", error);

@@ -1,5 +1,4 @@
-"use client";
-
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -16,71 +14,110 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
+import { fetchrecentTimetables } from "@/lib/actions/table.actions";
+import { Timetable } from "@prisma/client";
+import { AlertTriangle, Eye } from "lucide-react";
+import Link from "next/link";
 
-interface Timetable {
-  id: string;
-  title: string;
-  branch: string;
-  year: number;
-  startDate: string;
-  endDate: string;
-  exams: number;
-}
+export default async function RecentTimetables() {
+  try {
+    const response = await fetchrecentTimetables();
 
-interface RecentTimetablesProps {
-  timetables: Timetable[];
-}
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-export default function RecentTimetables({
-  timetables,
-}: RecentTimetablesProps) {
-  return (
-    <Card className="col-span-full">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>Recent Timetables</CardTitle>
-          <CardDescription>
-            Recently created and updated timetables
-          </CardDescription>
-        </div>
-        <Button>Create New</Button>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Branch</TableHead>
-              <TableHead>Year</TableHead>
-              <TableHead>Start Date</TableHead>
-              <TableHead>End Date</TableHead>
-              <TableHead className="text-center">Exams</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {timetables.map((timetable) => (
-              <TableRow key={timetable.id}>
-                <TableCell className="font-medium">{timetable.title}</TableCell>
-                <TableCell>{timetable.branch}</TableCell>
-                <TableCell>{timetable.year}</TableCell>
-                <TableCell>{timetable.startDate}</TableCell>
-                <TableCell>{timetable.endDate}</TableCell>
-                <TableCell className="text-center">
-                  <Badge variant="outline">{timetable.exams}</Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button variant="ghost" size="icon">
-                    <Eye size={16} />
-                  </Button>
-                </TableCell>
+    const timetables: Timetable[] = await response.json();
+
+    return (
+      <Card className="col-span-full">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Recent Timetables</CardTitle>
+            <CardDescription>
+              Recently created and updated timetables
+            </CardDescription>
+          </div>
+          <Button asChild>
+            <Link href="/dashboard/timetable">
+              <Eye className="h-4 w-4" />
+              View All Timetables
+            </Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Title</TableHead>
+                <TableHead>Branch</TableHead>
+                <TableHead>Year</TableHead>
+                <TableHead>Start Date</TableHead>
+                <TableHead>End Date</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
-  );
+            </TableHeader>
+            <TableBody>
+              {timetables.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center h-24">
+                    No timetables found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                timetables.map((timetable) => (
+                  <TableRow key={timetable.id}>
+                    <TableCell className="font-medium">
+                      {timetable.title}
+                    </TableCell>
+                    <TableCell>{timetable.branch}</TableCell>
+                    <TableCell>{timetable.year}</TableCell>
+                    <TableCell>
+                      {new Date(timetable.startDate).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        }
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(timetable.endDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    );
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Failed to load recent timetables";
+
+    return (
+      <Card className="col-span-full">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertTriangle className="h-5 w-5" />
+            Loading Error
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-destructive">{errorMessage}</div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Please try refreshing the page or contact support if the problem
+            persists.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 }

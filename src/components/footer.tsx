@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 
 import { Icons } from "@/components/icons";
@@ -13,16 +12,6 @@ function Footer() {
               <Icons.logo className="icon-class w-8" />
               <h2 className="text-lg font-bold">Exam Flow</h2>
             </Link>
-
-            <h1 className="dark:text-gray-300 mt-4 ">
-              Build by{" "}
-              <span className="text-[#039ee4] mr-2">
-                <Link href="https://github.com/Aftab3008">@Aftab</Link>
-              </span>
-              <span className="text-[#039ee4]">
-                <Link href="https://github.com/Venu005">@Venusai</Link>
-              </span>
-            </h1>
 
             <p className="text-sm dark:text-gray-400 mt-5">
               © {new Date().getFullYear()} ExamFlow. All rights reserved.

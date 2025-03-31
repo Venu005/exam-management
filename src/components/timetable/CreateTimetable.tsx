@@ -17,10 +17,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createTimetable } from "@/lib/actions/table.actions";
 import { CreateTableSchema } from "@/validation/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { Loader, PlusCircle } from "lucide-react";
+import { Loader2, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -43,14 +43,18 @@ export default function CreateTimetable() {
   const onSubmit = async (values: z.infer<typeof CreateTableSchema>) => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/timetable", values);
-
+      const response = await createTimetable(values);
+      if (response.status === 500) {
+        throw new Error("Failed to create timetable");
+      }
       setOpen(false);
       form.reset();
-      toast("Timetable generated successfully");
+      toast.success("Timetable generated successfully");
     } catch (error: any) {
       console.error("Generation error:", error);
-      toast(error.response?.data?.message || "Error generating timetable");
+      toast.error(
+        error.response?.data?.message || "Error generating timetable"
+      );
     } finally {
       setLoading(false);
     }
@@ -66,10 +70,7 @@ export default function CreateTimetable() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            <PlusCircle size={18} />
-            Create New Timetable
-          </DialogTitle>
+          <DialogTitle>Create New Timetable</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -141,7 +142,7 @@ export default function CreateTimetable() {
             <Button type="submit" disabled={loading}>
               {loading ? (
                 <div className="flex items-center space-x-2">
-                  <Loader className="animate-spin h-4 w-4" />
+                  <Loader2 className="animate-spin h-4 w-4" />
                   <span>Generating time-table</span>
                 </div>
               ) : (

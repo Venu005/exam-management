@@ -11,3 +11,19 @@ export interface Exam {
   subject: string;
   code: string;
 }
+
+export interface CreateTimetable {
+  year: String;
+  branch: String;
+  startDate: String;
+  endDate: String;
+}
+
+export interface Timetable {
+  id: string;
+  title: string;
+  branch: string;
+  year: number;
+  startDate: string;
+  endDate: string;
+}

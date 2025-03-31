@@ -12,9 +12,9 @@ export const NavBar = () => {
     <nav className="flex items-end justify-between py-4 px-6 bg-background border-b top-0 sticky z-50">
       <Link
         href="/"
-        className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 cursor-pointer"
+        className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-black dark:from-white to-gray-500 dark:to-gray-400 cursor-pointer"
       >
-        Exam Flow
+        ExamFlow
       </Link>
       <div className="flex items-center ml-auto gap-2">
         {isSignedIn ? (
