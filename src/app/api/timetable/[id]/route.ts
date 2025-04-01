@@ -121,7 +121,7 @@ export async function DELETE(
       }),
     ]);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, status: 204 });
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to delete timetable" },

@@ -21,7 +21,7 @@ export default function RootLayout({
       <ClerkProvider>
         <body className={inter.className}>
           <NavBar />
-          <Toaster />
+          <Toaster richColors />
           {children}
         </body>
       </ClerkProvider>

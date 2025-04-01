@@ -61,3 +61,19 @@ export async function fetchrecentTimetables() {
     );
   }
 }
+
+export async function deleteTimetable(id: string) {
+  try {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_URL}/api/timetable/${id}`
+    );
+    if (response.status === 500) {
+      throw new Error("Failed to delete timetable");
+    }
+    revalidatePath("/dashboard/timetable");
+    return { message: "Timetable deleted successfully", status: 204 };
+  } catch (error) {
+    console.error("Error deleting timetable:", error);
+    return { error: "Error deleting timetable", status: 500 };
+  }
+}

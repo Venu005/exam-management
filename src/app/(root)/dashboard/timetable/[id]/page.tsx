@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { deleteTimetable } from "@/lib/actions/table.actions";
 import { TimeTableSchema } from "@/validation/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -71,7 +72,7 @@ export default function TimetableDetail({
         });
         setLoading(false);
       } catch (error) {
-        toast("Error loading timetable");
+        toast.error("Error loading timetable");
         router.push("/dashboard/timetable");
       }
     };
@@ -123,11 +124,16 @@ export default function TimetableDetail({
   const handleDelete = async () => {
     try {
       setDeleting(true);
-      await axios.delete(`/api/timetable/${params.id}`);
-      toast("Timetable deleted");
+      const response = await deleteTimetable(params.id);
+      if (response.status === 400) {
+        toast.error("Failed to delete timetable");
+        setDeleting(false);
+        return;
+      }
+      toast.success("Timetable deleted");
       router.push("/dashboard/timetable");
     } catch (error) {
-      toast("Deletion failed");
+      toast.error("Deletion failed");
       setDeleting(false);
     }
   };

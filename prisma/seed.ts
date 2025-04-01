@@ -13,41 +13,57 @@ async function main() {
     prisma.classroom.deleteMany(),
   ]);
 
-  // Seed CSE Classrooms with unique names
-  const cseClassrooms = await Promise.all(
-    [1, 2, 3, 4].map(async (year) => {
-      return prisma.classroom.create({
-        data: {
-          name: `CSE-${year}01-${Date.now()}`, // Add unique timestamp
-          capacity: 60,
-          branch: "CSE",
-          year: year,
-          seats: {
-            create: Array.from({ length: 60 }, (_, i) => ({
-              seatNumber: `${String.fromCharCode(65 + Math.floor(i / 30))}${
-                (i % 30) + 1
-              }`,
-            })),
+  // Define branches and classroom configuration
+  const branches = ["CSE", "AIDS", "ECE", "ME"];
+  const years = [1, 2, 3, 4];
+  const classroomsPerBranch = 2; // Creates 2 classrooms per branch (total 8 classrooms)
+  const seatsPerClassroom = 30;
+  const studentsPerYear = 60;
+
+  // Create classrooms for all branches
+  const classrooms = await Promise.all(
+    branches.flatMap((branch) =>
+      years.map((year) =>
+        prisma.classroom.create({
+          data: {
+            name: `${branch}-${year}01`,
+            capacity: seatsPerClassroom,
+            branch: branch,
+            year: year,
+            seats: {
+              create: Array.from({ length: seatsPerClassroom }, (_, i) => ({
+                seatNumber: `A${i + 1}`,
+              })),
+            },
           },
-        },
-      });
-    })
+        })
+      )
+    )
   );
 
-  // Seed Students with unique roll numbers
+  // Generate students for all branches and years
   const students = [];
-  for (let year = 1; year <= 4; year++) {
-    for (let i = 1; i <= 50; i++) {
-      students.push({
-        rollNumber: `CSE${year}-${i.toString().padStart(3, "0")}-${Date.now()}`, // Add timestamp
-        name: `Student ${i}`,
-        branch: "CSE",
-        year: year,
-      });
+  for (const branch of branches) {
+    for (const year of years) {
+      for (let i = 1; i <= studentsPerYear; i++) {
+        students.push({
+          rollNumber: `${branch}${year}-${i.toString().padStart(3, "0")}`,
+          name: `Student ${i} ${branch}${year}`,
+          branch: branch,
+          year: year,
+        });
+      }
     }
   }
 
   await prisma.student.createMany({ data: students });
+
+  console.log(`Seeded:
+- ${classrooms.length} classrooms (${branches.length} branches, ${
+    years.length
+  } years each)
+- ${students.length} students
+- ${classrooms.length * seatsPerClassroom} seats total`);
 }
 
 main()

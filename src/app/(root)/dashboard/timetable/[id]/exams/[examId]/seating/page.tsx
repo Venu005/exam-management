@@ -101,7 +101,7 @@ export default function SeatingPage({
 
   if (loading) {
     return (
-      <div className="flex justify-center p-8 h-full w-full">
+      <div className="flex justify-center p-8 h-screen w-full">
         <Loader2 className="animate-spin h-8 w-8" />
       </div>
     );
