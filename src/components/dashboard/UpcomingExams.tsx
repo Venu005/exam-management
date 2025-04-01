@@ -24,9 +24,9 @@ interface UpcomingExamsProps {
 
 export default function UpcomingExams({ exams }: UpcomingExamsProps) {
   const statusColors = {
-    upcoming: "bg-blue-100 text-blue-800",
-    ongoing: "bg-green-100 text-green-800",
-    completed: "bg-gray-100 text-gray-800",
+    upcoming: "bg-blue-100 text-blue-800 hover:bg-blue-200",
+    ongoing: "bg-green-100 text-green-800 hover:bg-blue-200",
+    completed: "bg-gray-100 text-gray-800 hover:bg-blue-200",
   };
 
   return (

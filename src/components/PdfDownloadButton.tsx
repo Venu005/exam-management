@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { Loader2 } from "lucide-react";
+import { DownloadIcon, Loader2 } from "lucide-react";
 import PdfTimetable from "./PdfTimeTable";
 
 export default function PDFDownloadButton({ timetable }: { timetable: any }) {
@@ -13,6 +13,7 @@ export default function PDFDownloadButton({ timetable }: { timetable: any }) {
     >
       {({ loading }) => (
         <Button variant="outline" disabled={loading} type="button">
+          <DownloadIcon className="mr-2" />
           {loading ? (
             <div className="flex items-center space-x-2">
               <Loader2 className="animate-spin h-4 w-4" />

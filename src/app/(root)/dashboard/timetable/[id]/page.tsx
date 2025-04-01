@@ -24,7 +24,7 @@ import { deleteTimetable } from "@/lib/actions/table.actions";
 import { TimeTableSchema } from "@/validation/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, MailIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -169,6 +169,7 @@ export default function TimetableDetail({
                 onClick={handleNotify}
                 disabled={notifying}
               >
+                <MailIcon className="h-4 w-4 mr-2 text-black" />
                 {notifying ? (
                   <div className="flex items-center">
                     <Loader2 className="animate-spin h-4 w-4 text-white" />
@@ -184,6 +185,7 @@ export default function TimetableDetail({
                 onClick={handleDelete}
                 disabled={deleting}
               >
+                <TrashIcon className="h-4 w-4 mr-2 text-white" />
                 {deleting ? "Deleting..." : "Delete Timetable"}
               </Button>
             </div>

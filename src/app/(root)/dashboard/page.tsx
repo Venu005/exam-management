@@ -86,45 +86,6 @@ export default function Dashboard() {
     },
   ];
 
-  const timetables = [
-    {
-      id: "1",
-      title: "CSE Year 3 Timetable",
-      branch: "CSE",
-      year: 3,
-      startDate: "28/03/2025",
-      endDate: "11/4/2025",
-      exams: 6,
-    },
-    {
-      id: "2",
-      title: "CSE Year 3 Timetable",
-      branch: "CSE",
-      year: 3,
-      startDate: "19/3/2025",
-      endDate: "3/4/2025",
-      exams: 6,
-    },
-    {
-      id: "3",
-      title: "CSE Year 3 Timetable",
-      branch: "CSE",
-      year: 3,
-      startDate: "13/3/2025",
-      endDate: "24/3/2025",
-      exams: 6,
-    },
-    {
-      id: "4",
-      title: "CSE Year 3 Timetable",
-      branch: "CSE",
-      year: 3,
-      startDate: "7/4/2025",
-      endDate: "16/4/2025",
-      exams: 6,
-    },
-  ];
-
   return (
     <>
       <div className="grid gap-6">
