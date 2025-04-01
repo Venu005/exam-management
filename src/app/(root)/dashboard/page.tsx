@@ -40,7 +40,7 @@ export default function Dashboard() {
     {
       id: "1",
       title: "CSE301 - Database Management",
-      date: "May 15, 2023",
+      date: "May 15, 2024",
       time: "10:00 AM",
       students: 120,
       status: "upcoming" as const,
@@ -48,7 +48,7 @@ export default function Dashboard() {
     {
       id: "2",
       title: "CSE205 - Data Structures",
-      date: "May 16, 2023",
+      date: "May 16, 2024",
       time: "2:00 PM",
       students: 98,
       status: "upcoming" as const,
@@ -56,7 +56,7 @@ export default function Dashboard() {
     {
       id: "3",
       title: "CSE104 - Introduction to Programming",
-      date: "May 17, 2023",
+      date: "May 17, 2024",
       time: "9:00 AM",
       students: 150,
       status: "upcoming" as const,
@@ -65,17 +65,17 @@ export default function Dashboard() {
 
   const events = [
     {
-      date: new Date(2023, 4, 15),
+      date: new Date(2024, 4, 15),
       title: "CSE301 Exam",
       type: "exam" as const,
     },
     {
-      date: new Date(2023, 4, 16),
+      date: new Date(2024, 4, 16),
       title: "CSE205 Exam",
       type: "exam" as const,
     },
     {
-      date: new Date(2023, 4, 20),
+      date: new Date(2024, 4, 20),
       title: "New Timetable",
       type: "timetable" as const,
     },
